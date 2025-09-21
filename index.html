@@ -113,7 +113,7 @@
       { id: "S30", lat: 5.8810, lng: -73.0010, demand: 34 }
     ];
 
-    // Formateador
+    // Formatter personalizado sin tiempo
     var CustomFormatter = L.Routing.Formatter.extend({
       formatInstruction: function(instr) {
         var distance = this.formatDistance(instr.distance);
@@ -122,12 +122,16 @@
       },
       _getInstructionTemplate: function(instr) {
         switch (instr.type) {
-          case 'Straight': return 'Continue';
-          case 'Right': return 'Turn right';
-          case 'Left': return 'Turn left';
-          case 'DestinationReached': return 'Destination reached';
-          default: return 'Continue';
+          case 'Straight': return 'Continuar recto';
+          case 'Right': return 'Girar a la derecha';
+          case 'Left': return 'Girar a la izquierda';
+          case 'DestinationReached': return 'Destino alcanzado';
+          default: return 'Seguir';
         }
+      },
+      formatTime: function() { return ""; }, // ⚡ elimina tiempos
+      formatSummary: function(route) {
+        return this.formatDistance(route.summary.totalDistance); // ⚡ solo distancia
       }
     });
 
@@ -161,7 +165,9 @@
         createMarker: (i, wp, n) => {
           if (i === 0 || i === n - 1) return null;
           const store = stores.find(s => s.lat === wp.latLng.lat && s.lng === wp.latLng.lng);
-          return L.marker(wp.latLng).bindPopup(`Tienda: ${store.id}<br>Demanda: ${store.demand} unidades<br>Secuencia: ${i}`);
+          return L.marker(wp.latLng).bindPopup(
+            `Tienda: ${store.id}<br>Demanda: ${store.demand} unidades<br>Secuencia: ${i}`
+          );
         },
         show: true
       }).addTo(map);
