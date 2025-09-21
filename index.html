@@ -16,7 +16,7 @@
       padding: 8px;
       border: 1px solid #ccc;
       z-index: 1000;
-      width: 250px;
+      width: 260px;
       min-height: 100px;
       font-size: 12px;
     }
@@ -78,6 +78,20 @@
 
     // Bodega
     const warehouse = { lat: 5.825, lng: -73.034 };
+
+    // Icono especial para la bodega
+    const warehouseIcon = L.icon({
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/25/25694.png", // ícono
+      iconSize: [35, 35],
+      iconAnchor: [17, 34],
+      popupAnchor: [0, -30]
+    });
+
+    // Agregar marcador de la bodega
+    L.marker([warehouse.lat, warehouse.lng], { icon: warehouseIcon })
+      .addTo(map)
+      .bindPopup("<b>Centro de distribución</b><br>Bodega (Inicio/Fin)")
+      .openPopup();
 
     // Tiendas
     const stores = [
@@ -199,6 +213,7 @@
     legend.onAdd = function () {
       const div = L.DomUtil.create('div', 'legend');
       div.innerHTML = '<h4>Leyenda</h4>';
+      div.innerHTML += `<div><img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" width="14"/> Centro de distribución</div>`;
       routes.forEach((route, index) => {
         const totalDemand = route.stores.reduce((sum, id) => {
           const store = stores.find(s => s.id === id);
@@ -246,7 +261,7 @@
       Object.values(routePanels).forEach(panel => { panel.style.display = 'none'; });
       const panel = document.getElementById(panelId);
       if (panel) {
-        panel.style.top = `140px`; // debajo del panel "Cómo Llegar"
+        panel.style.top = `140px`;
         panel.style.display = 'block';
       }
     };
