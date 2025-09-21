@@ -113,7 +113,7 @@
       { id: "S30", lat: 5.8810, lng: -73.0010, demand: 34 }
     ];
 
-    // Formatter personalizado sin tiempo
+    // Formatter personalizado: distancias + calles (sin tiempos)
     var CustomFormatter = L.Routing.Formatter.extend({
       formatInstruction: function(instr) {
         var distance = this.formatDistance(instr.distance);
@@ -121,17 +121,23 @@
         return distance + ' - ' + instruction;
       },
       _getInstructionTemplate: function(instr) {
+        let road = instr.road ? " en " + instr.road : "";
         switch (instr.type) {
-          case 'Straight': return 'Continuar recto';
-          case 'Right': return 'Girar a la derecha';
-          case 'Left': return 'Girar a la izquierda';
-          case 'DestinationReached': return 'Destino alcanzado';
-          default: return 'Seguir';
+          case 'Straight': return 'Continuar recto' + road;
+          case 'Right': return 'Girar a la derecha' + road;
+          case 'Left': return 'Girar a la izquierda' + road;
+          case 'SlightRight': return 'Giro leve a la derecha' + road;
+          case 'SlightLeft': return 'Giro leve a la izquierda' + road;
+          case 'SharpRight': return 'Giro fuerte a la derecha' + road;
+          case 'SharpLeft': return 'Giro fuerte a la izquierda' + road;
+          case 'Roundabout': return 'Tomar la salida ' + instr.exit + ' en la rotonda' + road;
+          case 'DestinationReached': return 'Destino alcanzado' + road;
+          default: return 'Seguir' + road;
         }
       },
-      formatTime: function() { return ""; }, // ⚡ elimina tiempos
+      formatTime: function() { return ""; }, // eliminar tiempos
       formatSummary: function(route) {
-        return this.formatDistance(route.summary.totalDistance); // ⚡ solo distancia
+        return this.formatDistance(route.summary.totalDistance); // solo distancia
       }
     });
 
